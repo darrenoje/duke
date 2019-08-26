@@ -24,14 +24,38 @@ public class Duke {
                 System.out.println("Here are the tasks in your list:");
                 for (int i=0; i<100; i++) {
                     if (array[i] == null) break;
-                    System.out.println(i+1 + "." + "[" + array[i].getStatusIcon() + "] " + array[i].getDescription());
+                    System.out.println(i+1 + "." + array[i].toString());
                 }
             } else if (words.equals("done")) {
                 int num = sc.nextInt();
                 array[num-1].setDone(true);
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println("[" + array[num-1].getStatusIcon() + "] " + array[num-1].getDescription());
-            } else {
+            } else if (words.equals("deadline")) {
+                String words2 = sc.nextLine();
+                String[] temparray = words2.trim().split(" /by ");
+                System.out.println("Got it. I've added this task:");
+                array[counter] = new Deadline(temparray[0], temparray[1]);
+                counter++;
+                System.out.println(array[counter-1].toString());
+                System.out.println("Now you have " + counter + " tasks in the list.");
+            } else if (words.equals("todo")) {
+                String words2 = sc.nextLine();
+                System.out.println("Got it. I've added this task:");
+                array[counter] = new Todo(words2.trim());
+                counter++;
+                System.out.println(array[counter-1].toString());
+                System.out.println("Now you have " + counter + " tasks in the list.");
+            } else if (words.equals("event")) {
+                String words2 = sc.nextLine();
+                String[] temparray = words2.trim().split(" /at ");
+                System.out.println("Got it. I've added this task:");
+                array[counter] = new Event(temparray[0], temparray[1]);
+                counter++;
+                System.out.println(array[counter-1].toString());
+                System.out.println("Now you have " + counter + " tasks in the list.");
+            }
+            else {
                 String words2 = sc.nextLine();
                 String line = words + words2;
                 array[counter] = new Task(line);
