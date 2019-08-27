@@ -1,14 +1,18 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Duke {
     private static String projRoot = "C:/Users/darre/OneDrive/Desktop/CS2113T intellij/duke/src/main/";
     private static Task[] array = new Task[100];
 
-    public static void main(String[] args) throws DukeException, FileNotFoundException {
+    public static void main(String[] args) throws DukeException, FileNotFoundException, ParseException {
         Scanner sc = new Scanner(System.in);
         int counter=0;
         readFile();
@@ -44,14 +48,19 @@ public class Duke {
                         if (words2.trim().isEmpty())
                             throw new DukeException("☹ OOPS!!! The description of a deadline cannot be empty.");
                         String[] temparray = words2.trim().split(" /by ");
+                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                        Date date = format.parse(temparray[1]);
                         System.out.println("Got it. I've added this task:");
-                        array[counter] = new Deadline(temparray[0], temparray[1]);
+                        array[counter] = new Deadline(temparray[0], date);
                         appendFile(array[counter]);
                         counter++;
                         System.out.println(array[counter - 1].toString());
                         System.out.println("Now you have " + counter + " tasks in the list.");
                     } catch (DukeException e) {
                         System.out.println(e.getMessage());
+                    } catch (ParseException e) {
+                        System.out.println("Check format of date entered");
+                        continue;
                     }
                 } else if (words.equals("todo")) {
                     try {
@@ -73,14 +82,19 @@ public class Duke {
                         if (words2.trim().isEmpty())
                             throw new DukeException("☹ OOPS!!! The description of a event cannot be empty.");
                         String[] temparray = words2.trim().split(" /at ");
+                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                        Date date = format.parse(temparray[1]);
                         System.out.println("Got it. I've added this task:");
-                        array[counter] = new Event(temparray[0], temparray[1]);
+                        array[counter] = new Event(temparray[0], date);
                         appendFile(array[counter]);
                         counter++;
                         System.out.println(array[counter - 1].toString());
                         System.out.println("Now you have " + counter + " tasks in the list.");
                     } catch (DukeException e) {
                         System.out.println(e.getMessage());
+                    } catch (ParseException e) {
+                        System.out.println("Check format of date entered");
+                        continue;
                     }
                 } else {
                     throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
@@ -90,21 +104,24 @@ public class Duke {
             }
         }
     }
-    private static void readFile() throws FileNotFoundException {
+    private static void readFile() {
         File fileName = new File(projRoot + "duke.txt");
         int temp_counter = 0;
         ArrayList<String> temp = new ArrayList<>();
         try {
-       //     FileReader fileReader = new FileReader(fileName);
             temp = new ArrayList<>(Files.readAllLines(Paths.get(String.valueOf(fileName))));
             for (String string : temp) {
                 Task tempTask;
                 if (string.contains("[T]")) {
                     tempTask = new Todo(string.substring(7));
                 } else if (string.contains("[D]")) {
-                    tempTask = new Deadline(string.substring(7, string.indexOf("(by: ") - 1), string.substring(string.indexOf("(by: ") + 5, string.length() - 1));
+                    DateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                    Date date = format.parse(string.substring(string.indexOf("(by: ") + 5, string.length() - 1));
+                    tempTask = new Deadline(string.substring(7, string.indexOf("(by: ") - 1), date);
                 } else {
-                    tempTask = new Event(string.substring(7, string.indexOf("(at: ") - 1), string.substring(string.indexOf("(at: ") + 5, string.length() - 1));
+                    DateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                    Date date = format.parse(string.substring(string.indexOf("(by: ") + 5, string.length() - 1));
+                    tempTask = new Event(string.substring(7, string.indexOf("(at: ") - 1), date);
                 }
                 if (string.contains("\u2713")) {
                     tempTask.setDone(true);
@@ -112,7 +129,7 @@ public class Duke {
                 array[temp_counter] = tempTask;
                 temp_counter++;
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
