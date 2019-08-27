@@ -1,12 +1,17 @@
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Duke {
-    public static void main(String[] args) throws DukeException {
-        Scanner sc = new Scanner(System.in);
-        Task[] array;
-        array = new Task[100];
-        int counter=0;
+    private static String projRoot = "C:/Users/darre/OneDrive/Desktop/CS2113T intellij/duke/src/main/";
+    private static Task[] array = new Task[100];
 
+    public static void main(String[] args) throws DukeException, FileNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        int counter=0;
+        readFile();
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -30,6 +35,7 @@ public class Duke {
                 } else if (words.equals("done")) {
                     int num = sc.nextInt();
                     array[num - 1].setDone(true);
+                    refreshFile();
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("[" + array[num - 1].getStatusIcon() + "] " + array[num - 1].getDescription());
                 } else if (words.equals("deadline")) {
@@ -40,6 +46,7 @@ public class Duke {
                         String[] temparray = words2.trim().split(" /by ");
                         System.out.println("Got it. I've added this task:");
                         array[counter] = new Deadline(temparray[0], temparray[1]);
+                        appendFile(array[counter]);
                         counter++;
                         System.out.println(array[counter - 1].toString());
                         System.out.println("Now you have " + counter + " tasks in the list.");
@@ -53,6 +60,7 @@ public class Duke {
                             throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
                         System.out.println("Got it. I've added this task:");
                         array[counter] = new Todo(words2.trim());
+                        appendFile(array[counter]);
                         counter++;
                         System.out.println(array[counter - 1].toString());
                         System.out.println("Now you have " + counter + " tasks in the list.");
@@ -67,6 +75,7 @@ public class Duke {
                         String[] temparray = words2.trim().split(" /at ");
                         System.out.println("Got it. I've added this task:");
                         array[counter] = new Event(temparray[0], temparray[1]);
+                        appendFile(array[counter]);
                         counter++;
                         System.out.println(array[counter - 1].toString());
                         System.out.println("Now you have " + counter + " tasks in the list.");
@@ -79,6 +88,55 @@ public class Duke {
             } catch (DukeException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+    private static void readFile() throws FileNotFoundException {
+        File fileName = new File(projRoot + "duke.txt");
+        int temp_counter = 0;
+        ArrayList<String> temp = new ArrayList<>();
+        try {
+       //     FileReader fileReader = new FileReader(fileName);
+            temp = new ArrayList<>(Files.readAllLines(Paths.get(String.valueOf(fileName))));
+            for (String string : temp) {
+                Task tempTask;
+                if (string.contains("[T]")) {
+                    tempTask = new Todo(string.substring(7));
+                } else if (string.contains("[D]")) {
+                    tempTask = new Deadline(string.substring(7, string.indexOf("(by: ") - 1), string.substring(string.indexOf("(by: ") + 5, string.length() - 1));
+                } else {
+                    tempTask = new Event(string.substring(7, string.indexOf("(at: ") - 1), string.substring(string.indexOf("(at: ") + 5, string.length() - 1));
+                }
+                if (string.contains("\u2713")) {
+                    tempTask.setDone(true);
+                }
+                array[temp_counter] = tempTask;
+                temp_counter++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void appendFile(Task mytask) {
+        File myFile = new File(projRoot + "duke.txt");
+        try {
+            FileWriter fileWriter = new FileWriter(myFile, true);
+            fileWriter.write(mytask.toString() + "\n");
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void refreshFile() {
+        File myFile = new File(projRoot + "duke.txt");
+        try {
+            FileWriter fileWriter = new FileWriter(myFile, false);
+            for (int i = 0; i < 100; i++) {
+                if (array[i] == null) break;
+                fileWriter.write(array[i].toString() + "\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
