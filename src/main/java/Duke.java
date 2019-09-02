@@ -59,7 +59,6 @@ public class Duke {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
                         System.out.println("Check format of date entered");
-                        continue;
                     }
                 } else if (words.equals("todo")) {
                     try {
@@ -93,9 +92,23 @@ public class Duke {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
                         System.out.println("Check format of date entered");
-                        continue;
                     }
-                } else {
+                } else if (words.equals("find")) {
+                    try {
+                        String words2 = sc.nextLine();
+                        int counter = 1;
+                        System.out.println("Here are the matching tasks in your list:");
+                        for (Task task : list) {
+                            if (task.getDescription().contains(words2)) {
+                                System.out.println(counter + "." + task.toString());
+                            }
+                            counter++;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
                     throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
                 }
             } catch (DukeException e) {
