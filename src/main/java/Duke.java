@@ -10,11 +10,11 @@ import java.util.Scanner;
 
 public class Duke {
     private static String projRoot = "C:/Users/darre/OneDrive/Desktop/CS2113T intellij/duke/src/main/";
-    private static ArrayList<Task> list;
+    private static Task[] array = new Task[100];
 
     public static void main(String[] args) throws DukeException, FileNotFoundException, ParseException {
         Scanner sc = new Scanner(System.in);
-        list = new ArrayList<>();
+        int counter=0;
         readFile();
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
@@ -32,15 +32,16 @@ public class Duke {
 
                 if (words.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < list.size(); i++) {
-                        System.out.println(i + 1 + "." + list.get(i)/*.toString()*/);
+                    for (int i = 0; i < 100; i++) {
+                        if (array[i] == null) break;
+                        System.out.println(i + 1 + "." + array[i].toString());
                     }
                 } else if (words.equals("done")) {
                     int num = sc.nextInt();
-                    list.get(num - 1).setDone(true);
+                    array[num - 1].setDone(true);
                     refreshFile();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("[" + list.get(num - 1).getStatusIcon() + "] " + list.get(num - 1).getDescription());
+                    System.out.println("[" + array[num - 1].getStatusIcon() + "] " + array[num - 1].getDescription());
                 } else if (words.equals("deadline")) {
                     try {
                         String words2 = sc.nextLine();
@@ -50,11 +51,11 @@ public class Duke {
                         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
                         Date date = format.parse(temparray[1]);
                         System.out.println("Got it. I've added this task:");
-                        Task tempDeadline = new Deadline(temparray[0], date);
-                        list.add(tempDeadline);
-                        appendFile(tempDeadline);
-                        System.out.println(tempDeadline.toString());
-                        System.out.println("Now you have " + list.size() + " tasks in the list.");
+                        array[counter] = new Deadline(temparray[0], date);
+                        appendFile(array[counter]);
+                        counter++;
+                        System.out.println(array[counter - 1].toString());
+                        System.out.println("Now you have " + counter + " tasks in the list.");
                     } catch (DukeException e) {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
@@ -67,11 +68,11 @@ public class Duke {
                         if (words2.trim().isEmpty())
                             throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
                         System.out.println("Got it. I've added this task:");
-                        Task tempTodo = new Todo(words2.trim());
-                        list.add(tempTodo);
-                        appendFile(tempTodo);
-                        System.out.println(tempTodo.toString());
-                        System.out.println("Now you have " + list.size() + " tasks in the list.");
+                        array[counter] = new Todo(words2.trim());
+                        appendFile(array[counter]);
+                        counter++;
+                        System.out.println(array[counter - 1].toString());
+                        System.out.println("Now you have " + counter + " tasks in the list.");
                     } catch (DukeException e) {
                         System.out.println(e.getMessage());
                     }
@@ -84,11 +85,11 @@ public class Duke {
                         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
                         Date date = format.parse(temparray[1]);
                         System.out.println("Got it. I've added this task:");
-                        Task tempEvent = new Event(temparray[0], date);
-                        list.add(tempEvent);
-                        appendFile(tempEvent);
-                        System.out.println(tempEvent.toString());
-                        System.out.println("Now you have " + list.size() + " tasks in the list.");
+                        array[counter] = new Event(temparray[0], date);
+                        appendFile(array[counter]);
+                        counter++;
+                        System.out.println(array[counter - 1].toString());
+                        System.out.println("Now you have " + counter + " tasks in the list.");
                     } catch (DukeException e) {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
@@ -125,7 +126,7 @@ public class Duke {
                 if (string.contains("\u2713")) {
                     tempTask.setDone(true);
                 }
-                list.add(tempTask);
+                array[temp_counter] = tempTask;
                 temp_counter++;
             }
         } catch (IOException | ParseException e) {
@@ -146,8 +147,9 @@ public class Duke {
         File myFile = new File(projRoot + "duke.txt");
         try {
             FileWriter fileWriter = new FileWriter(myFile, false);
-            for (Task task : list) {
-                fileWriter.write(task.toString() + "\n");
+            for (int i = 0; i < 100; i++) {
+                if (array[i] == null) break;
+                fileWriter.write(array[i].toString() + "\n");
             }
             fileWriter.close();
         } catch (IOException e) {
