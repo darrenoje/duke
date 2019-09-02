@@ -104,6 +104,20 @@ public class Duke {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else if (words.equals("find")) {
+                    try {
+                        String words2 = sc.nextLine();
+                        int counter = 1;
+                        System.out.println("Here are the matching tasks in your list:");
+                        for (Task task : list) {
+                            if (task.getDescription().contains(words2)) {
+                                System.out.println(counter + "." + task.toString());
+                            }
+                            counter++;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
