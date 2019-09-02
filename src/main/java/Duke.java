@@ -59,7 +59,6 @@ public class Duke {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
                         System.out.println("Check format of date entered");
-                        continue;
                     }
                 } else if (words.equals("todo")) {
                     try {
@@ -93,9 +92,20 @@ public class Duke {
                         System.out.println(e.getMessage());
                     } catch (ParseException e) {
                         System.out.println("Check format of date entered");
-                        continue;
                     }
-                } else {
+                } else if (words.equals("delete")) {
+                    try {
+                        int num = sc.nextInt();
+                        System.out.println("Noted. I've removed this task:");
+                        System.out.println(list.get(num - 1).toString());
+                        list.remove(num - 1);
+                        refreshFile();
+                        System.out.println("Now you have " + list.size() + " tasks in the list.");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
                     throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
                 }
             } catch (DukeException e) {
