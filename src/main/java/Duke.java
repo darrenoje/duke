@@ -19,16 +19,12 @@ public class Duke {
         while (true) {
             try {
                 Scanner sc = new Scanner(System.in);
-                if (sc.hasNextLine()) {
-                    String words = sc.nextLine();
-                    if (words.equals("bye")) {
-                        break;
-                    }
-                    Parser parser = new Parser(storage, ui, list);
-                    parser.parse(words);
-                } else {
+                String words = sc.nextLine();
+                if (words.equals("bye")) {
                     break;
                 }
+                Parser parser = new Parser(storage, ui, list);
+                parser.parse(words);
             } catch (ArrayIndexOutOfBoundsException | DukeException | ParseException e) {
                 System.out.println(e.getMessage());
             } catch (DateTimeException e) {
