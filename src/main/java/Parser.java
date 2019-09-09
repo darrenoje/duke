@@ -2,17 +2,37 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * A class called Parser
+ * which processes user's input
+ * and execute commands
+ *
+ */
 public class Parser {
     private Storage storage;
     private TaskList list;
     private Ui ui;
 
+    /**
+     * Creating a Parser object
+     *
+     * @param storage1 object that reads and writes to the Duke.txt file
+     * @param ui1 object that interacts with the user
+     * @param tasklist1 task list that stores the tasks inputted by user
+     */
     public Parser(Storage storage1, Ui ui1, TaskList tasklist1) {
         this.storage = storage1;
         this.ui = ui1;
         this.list = tasklist1;
     }
 
+    /**
+     * A method to execute the user's different inputs
+     *
+     * @param words user's input
+     * @throws DukeException for invalid input
+     * @throws ParseException for invalid parsing
+     */
     void parse(String words) throws DukeException, ParseException {
         String[] separatewords = words.split(" ", 2);
         if (words.equals("list")) {

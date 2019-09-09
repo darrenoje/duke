@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DeadlineTest {
     @Test
-    public void Event_test() throws ParseException {
+    public void Deadline_test() throws ParseException {
         String w1 = "[D][\u2718] test deadline project meeting (by: Mon Dec 02 18:00:00 SGT 2019)";
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
         Date date = format.parse("2/12/2019 1800");

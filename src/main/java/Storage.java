@@ -7,14 +7,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * A class to read, write and store data to and from a text file
+ */
 public class Storage {
     private String projRoot = "C:/Users/darre/OneDrive/Desktop/CS2113T intellij/duke/src/main/";
     private ArrayList<Task> list = new ArrayList<>();
 
+    /**
+     * A method to load objects
+     *
+     * @return list
+     */
     public ArrayList<Task> load() {
         return list;
     }
 
+    /**
+     * A method to read data from the text file
+     */
     void readFile() {
         File fileName = new File(projRoot + "duke.txt");
         ArrayList<String> temp = new ArrayList<>();
@@ -42,6 +53,12 @@ public class Storage {
             e.printStackTrace();
         }
     }
+
+    /**
+     * A method to add a string to the text file
+     *
+     * @param mytask The task that will be added to the text file
+     */
     void appendFile(Task mytask) {
         File myFile = new File(projRoot + "duke.txt");
         try {
@@ -52,6 +69,10 @@ public class Storage {
             System.out.println(e.getMessage());
         }
     }
+
+    /**
+     * A method to refresh the text file after a change
+     */
     void refreshFile() {
         File myFile = new File(projRoot + "duke.txt");
         try {
